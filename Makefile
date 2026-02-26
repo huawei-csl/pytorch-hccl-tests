@@ -90,22 +90,19 @@ install-cuda: ## Install package for CUDA backend testing. Use PyTorch 1.11.0 fo
 	pip install .
 
 install-npu-x86: clean ## Install package for Ascend backend testing (x86)
-	wget https://gitee.com/ascend/pytorch/releases/download/v5.0.rc2-pytorch1.11.0/torch_npu-1.11.0.post1-cp37-cp37m-linux_x86_64.whl
-	pip install torch_npu-1.11.0.post1-cp37-cp37m-linux_x86_64.whl
+	pip install torch-npu==2.8.0 --extra-index-url https://download.pytorch.org/whl/cpu
 	pip install .
 
 install-npu-arm: clean ## Install packages for Ascend/NPU backend testing (aarch64)
-	wget https://repo.huaweicloud.com/kunpeng/archive/Ascend/PyTorch/torch-1.11.0-cp37-cp37m-linux_aarch64.whl
-	wget https://gitee.com/ascend/pytorch/releases/download/v5.0.rc2-pytorch1.11.0/torch_npu-1.11.0.post1-cp37-cp37m-linux_aarch64.whl
-	pip install --force-reinstall torch-1.11.0-cp37-cp37m-linux_aarch64.whl torch_npu-1.11.0.post1-cp37-cp37m-linux_aarch64.whl
+	pip install --force-reinstall torch-npu==2.8.0
 	pip install .
 
 install: clean ## install the package to the active Python's site-packages
-	pip install torch==1.11.0+cpu torchvision==0.12.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+	pip install torch==2.8.0+cpu torchvision --extra-index-url https://download.pytorch.org/whl/cpu
 	pip install .
 
 # You can override the env variables. Example `make latency -e DEVICE=npu`
-export WORLD_SIZE = 4
+export WORLD_SIZE = 2
 export DEVICE = cpu
 
 # To surpress a torchrun warning
