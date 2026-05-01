@@ -12,7 +12,7 @@ on:
 
 jobs:
   run_tests:
-    name: tests
+    name: Allreduce/latency run on (${{ matrix.os }}, py${{ matrix.python_version }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
