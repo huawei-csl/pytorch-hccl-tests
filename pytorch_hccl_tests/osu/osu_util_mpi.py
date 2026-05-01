@@ -8,7 +8,6 @@ For detailed copyright and licensing information, please refer to the
 copyright file COPYRIGHT in the top level OMB directory.
 """
 
-
 import logging
 import math
 

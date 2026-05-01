@@ -1,4 +1,5 @@
 """Console script for pytorch-hccl-tests."""
+
 import logging
 import os
 import sys

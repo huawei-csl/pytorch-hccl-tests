@@ -1,6 +1,7 @@
 """
 ModelArts entrypoint for PyTorch HCCL benchmarks
 """
+
 import argparse
 import logging
 import os

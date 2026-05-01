@@ -1,9 +1,9 @@
 default_language_version:
-  python: python3.8
+  python: python3.10
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: check-case-conflict
@@ -14,12 +14,11 @@ repos:
       - id: check-docstring-first
       - id: detect-private-key
   - repo: https://github.com/psf/black
-    rev: 23.3.0 # Replace by any tag/version: https://github.com/psf/black/tags
+    rev: 26.3.1 # Replace by any tag/version: https://github.com/psf/black/tags
     hooks:
       - id: black
-        language_version: python3.8 # Should be a command that runs python3.8+
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 8.0.1
     hooks:
       - id: isort
         name: isort (python)
