@@ -58,10 +58,8 @@ def broadcast(args):
         if rank == 0:
             logger.info("%-10d%18.2f" % (size, avg_latency_ms))
             size_in_bytes = int(size) * get_nbytes_from_dtype(dtype)
-            df = df.append(
-                {"size_in_bytes": size_in_bytes, "avg_latency_ms": avg_latency_ms},
-                ignore_index=True,
-            )
+            new_row = {"size_in_bytes": size_in_bytes, "avg_latency_ms": avg_latency_ms}
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
     if rank == 0:
         df.to_csv(f"osu_broadcast-{device.type}-{dtype}-{world_size}.csv", index=False)

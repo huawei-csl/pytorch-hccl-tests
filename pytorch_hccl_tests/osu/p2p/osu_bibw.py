@@ -83,10 +83,11 @@ def bibw(args):
 
             bw = size_in_bytes / total_time_ms
             logger.info("%-10d%18.2f" % (size_in_bytes, bw))
-            df = df.append(
-                {"size_in_bytes": int(size), "bw_mb_per_sec": total_time_sec_per_iter},
-                ignore_index=True,
-            )
+            new_row = {
+                "size_in_bytes": int(size),
+                "bw_mb_per_sec": total_time_sec_per_iter,
+            }
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
     if rank == 0:
         df.to_csv(f"osu_bibw-{device.type}-{dtype}-{world_size}.csv", index=False)
