@@ -35,7 +35,7 @@ def get_parser():
     )
     parser.add_argument(
         "--dtype",
-        default=os.environ.get("HCCL_DTYPE", "float"),
+        default=os.environ.get("HCCL_DTYPE", "float16"),
         choices=list(_TORCH_DTYPES.keys()),
         type=str,
         help="data type",
