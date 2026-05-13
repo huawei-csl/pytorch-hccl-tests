@@ -4,7 +4,7 @@
 # Generates multiple CSV/PNG files
 
 # Install seabon for plotting
-pip install seaborn==0.12.2
+pip install seaborn==0.13.2
 
 
 export DEVICE="npu"
