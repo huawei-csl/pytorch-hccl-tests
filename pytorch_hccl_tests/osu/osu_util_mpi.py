@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class Utils:
     def avg_lat(elapsed_time_ms: int, iterations, num_procs, device: torch.device):
         avg_latency = torch.tensor(
-            elapsed_time_ms / float(iterations), dtype=torch.float64
+            elapsed_time_ms / float(iterations), dtype=torch.float32
         ).to(device)
         dist.reduce(avg_latency, 0, op=dist.ReduceOp.SUM)
         avg_latency /= float(num_procs)

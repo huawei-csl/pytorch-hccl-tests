@@ -125,7 +125,7 @@ def dist_init(device: str, local_rank: int):
     else:
         raise ValueError("unknown device")
 
-    dist.init_process_group(backend=backend)
+    dist.init_process_group(backend=backend, device_id=local_rank)
     return backend
 
 
