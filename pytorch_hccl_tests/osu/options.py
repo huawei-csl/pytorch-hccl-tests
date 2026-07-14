@@ -24,21 +24,22 @@ class Options:
         self.update_options()
 
     def update_options(self):
-        pt2pt = {"latency", "bw", "bibw", "multi_lat"}
+        pt2pt = {"latency", "bw", "bibw", "multi_lat", "mbw_mr"}
         coll_reduce = {"reduce", "allreduce", "reduce_scatter"}
+        bandwidth = {"bw", "bibw", "mbw_mr"}
 
         if self.args.buffer:
             self.buffer = self.args.buffer
         if self.args.iterations:
             self.iterations = self.args.iterations
             self.iterations_large = int(self.args.iterations / 100) + 1
-        elif self.args.benchmark in {"bw", "bibw"}:
+        elif self.args.benchmark in bandwidth:
             self.iterations = 100
             self.iterations_large = 30
         if self.args.skip:
             self.skip = self.args.skip
             self.skip_large = int(self.args.skip / 100) + 1
-        elif self.args.benchmark in {"bw", "bibw"}:
+        elif self.args.benchmark in bandwidth:
             self.skip = 10
             self.skip_large = 3
         if self.args.max:

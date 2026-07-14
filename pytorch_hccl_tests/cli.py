@@ -15,7 +15,7 @@ from pytorch_hccl_tests.osu.collectives import (
     broadcast,
     reducescatter,
 )
-from pytorch_hccl_tests.osu.p2p import bibw, bw, latency, multi_lat
+from pytorch_hccl_tests.osu.p2p import bibw, bw, latency, mbw_mr, multi_lat
 from pytorch_hccl_tests.osu.startup import hello
 from pytorch_hccl_tests.parser import get_parser
 
@@ -30,6 +30,7 @@ def select_bench(args):
         "bandwidth": bw,
         "bibw": bibw,
         "multi-latency": multi_lat,
+        "mbw_mr": mbw_mr,
         "allreduce": allreduce,
         "allgather": allgather,
         "broadcast": broadcast,

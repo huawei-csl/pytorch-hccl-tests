@@ -102,7 +102,9 @@ install: clean ## install the package to the active Python's site-packages
 	pip install .
 
 # You can override the env variables. Example `make latency -e DEVICE=npu`
-export WORLD_SIZE = 2
+# WORLD_SIZE uses ?= so an environment prefix is honored without -e, e.g.
+# `WORLD_SIZE=8 make mbw-mr DEVICE=npu`. A plain `=` would shadow the env value.
+export WORLD_SIZE ?= 2
 export DEVICE = cpu
 
 # To surpress a torchrun warning
@@ -122,6 +124,9 @@ bandwidth: ## OSU MPI/HCCL bandwidth benchmark
 
 bidirectional-bw: ## OSU MPI/HCCL bidirectional bandwidth benchmark
 	torchrun --nnodes 1 --nproc_per_node 2 pytorch_hccl_tests/cli.py --benchmark bibw --device ${DEVICE}
+
+mbw-mr: ## OSU MPI/HCCL multiple bandwidth / message rate benchmark (multi-pair)
+	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark mbw_mr --device ${DEVICE}
 
 allreduce: ## OSU MPI/HCCL allreduce benchmark
 	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark allreduce --device ${DEVICE}
@@ -151,7 +156,7 @@ reducescatter: ## OSU MPI/HCCL reduce_scatter benchmark
 	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark reducescatter --device ${DEVICE}
 
 
-p2p: latency bandwidth bidirectional-bw multi-latency ## OSU MPI/HCCL point-to-point benchmark suite
+p2p: latency bandwidth bidirectional-bw multi-latency mbw-mr ## OSU MPI/HCCL point-to-point benchmark suite
 
 collectives: allreduce allgather alltoall barrier gather reduce scatter reducescatter  ## OSU MPI/HCCL collective communications benchmark suite
 

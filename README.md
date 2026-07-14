@@ -28,6 +28,7 @@ The following benchmarks are available. To view the list of available benchmarks
 latency              OSU MPI/HCCL latency benchmark
 bandwidth            OSU MPI/HCCL bandwidth benchmark
 bidirectional-bw     OSU MPI/HCCL bidirectional bandwidth benchmark
+mbw-mr               OSU MPI/HCCL multiple bandwidth / message rate benchmark (multi-pair)
 allreduce            OSU MPI/HCCL allreduce benchmark
 allgather            OSU MPI/HCCL allgather benchmark
 alltoall             OSU MPI/HCCL alltoall benchmark

@@ -78,3 +78,12 @@ def test_latency_size_two():
     args.world_size = 2
     mp.spawn(worker_entrypoint, args=(args,), nprocs=args.world_size)
     assert True
+
+
+@pytest.mark.skipif(True, reason="takes too long")
+def test_mbw_mr_size_four():
+    args = get_parser().parse_args()
+    args.benchmark = "mbw_mr"
+    args.world_size = 4
+    mp.spawn(worker_entrypoint, args=(args,), nprocs=args.world_size)
+    assert True
