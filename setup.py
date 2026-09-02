@@ -23,16 +23,17 @@ test_requirements = [
 setup(
     author="HCCL Test Authors",
     author_email="hccl-tests@gmail.com",
-    python_requires=">=3.6",
+    python_requires=">=3.9",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
     description="End-to-end PyTorch distributed benchamrks (HCCL backend)",
     entry_points={
@@ -49,7 +50,7 @@ setup(
     packages=find_packages(include=["pytorch_hccl_tests", "pytorch_hccl_tests.*"]),
     test_suite="tests",
     tests_require=test_requirements,
-    url="https://github.com/Algebraic-Programming/pytorch-hccl-tests",
+    url="https://github.com/huawei-csl/pytorch-hccl-tests",
     version="0.1.14",
     zip_safe=False,
 )
