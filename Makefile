@@ -1,4 +1,4 @@
-.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint lint/flake8 lint/black
+.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint lint/flake8 lint/black lint/prospector
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -52,7 +52,10 @@ lint/flake8: ## check style with flake8
 lint/black: ## check style with black
 	black --check pytorch_hccl_tests tests
 
-lint: lint/flake8 lint/black ## check style
+lint/prospector: ## check style with prospector
+	prospector
+
+lint: lint/flake8 lint/black lint/prospector ## check style
 
 test: ## run tests quickly with the default Python
 	pytest

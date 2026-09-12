@@ -42,9 +42,9 @@ def main():
     hccl_bench_code_dir = args.code_dir
 
     # get environment variables set by ModelArts job
-    host = "{0}-{1}-0.{2}".format(
-        os.environ["MA_VJ_NAME"], os.environ["MA_TASK_NAME"], os.environ["MA_VJ_NAME"]
-    )
+    ma_vj_name = os.environ["MA_VJ_NAME"]
+    ma_task_name = os.environ["MA_TASK_NAME"]
+    host = f"{ma_vj_name}-{ma_task_name}-0.{ma_vj_name}"
     port = "6789"
     rdzv_endpoint = f"{host}:{port}"
 

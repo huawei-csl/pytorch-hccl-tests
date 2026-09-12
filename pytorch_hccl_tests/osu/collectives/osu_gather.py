@@ -45,6 +45,7 @@ def osu_gather(args):
                 safe_rand(size, dtype=dtype).to(device) for _ in range(world_size)
             ]
 
+        start_event = None
         dist.barrier()
         for i in range(options.iterations + options.skip):
             if i == options.skip:
@@ -60,7 +61,7 @@ def osu_gather(args):
         )
 
         if rank == 0:
-            logger.info("%-10d%18.2f" % (size, avg_latency_ms))
+            logger.info(f"{size:<10d}{avg_latency_ms:>18.2f}")
             size_in_bytes = int(size) * get_nbytes_from_dtype(dtype)
             new_row = {"size_in_bytes": size_in_bytes, "avg_latency_ms": avg_latency_ms}
             rows.append(new_row)

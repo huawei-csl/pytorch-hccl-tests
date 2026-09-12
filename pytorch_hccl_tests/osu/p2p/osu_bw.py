@@ -30,8 +30,8 @@ def bw(args):
     Utils.check_numprocs(world_size, rank, limit=2)
 
     if rank == 0:
-        logger.info("# OMB-Py MPI %s Test" % (options.benchmark))
-        logger.info("# %-8s%18s" % ("Size (B)", "Bandwidth (GB/s)"))
+        logger.info(f"# OMB-Py MPI {options.benchmark} Test")
+        logger.info(f'# {"Size (B)":<8}{"Bandwidth (GB/s)":>18}')
 
     rows = []
 
@@ -85,7 +85,7 @@ def bw(args):
             t_sec = total_time_ms / 1000.0
             bw_gbps = (size_in_bytes * options.iterations * window_size) / (1e9 * t_sec)
 
-            logger.info("%-10d%18.2f" % (size_in_bytes, bw_gbps))
+            logger.info(f"{size_in_bytes:<10d}{bw_gbps:>18.2f}")
             new_row = {
                 "size_in_bytes": int(size_in_bytes),
                 "bw_gbps": bw_gbps,

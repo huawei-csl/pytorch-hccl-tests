@@ -113,10 +113,10 @@ def dist_init(device: str, local_rank: int):
     elif device == "npu":
         try:
             import torch_npu  # noqa
-        except Exception:
+        except Exception as exc:
             raise ImportError(
                 "You must install PyTorch Ascend Adaptor from https://gitee.com/ascend/pytorch."
-            )
+            ) from exc
         torch.npu.set_device(local_rank)
         backend = "hccl"
     elif device == "cuda":

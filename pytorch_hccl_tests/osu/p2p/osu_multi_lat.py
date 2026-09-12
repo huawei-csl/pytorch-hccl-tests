@@ -68,7 +68,7 @@ def multi_lat(args):
 
         if rank == 0:
             size_in_bytes = int(size) * get_nbytes_from_dtype(dtype)
-            logger.info("%-10d%18.2f" % (size_in_bytes, avg_latency_ms))
+            logger.info(f"{size_in_bytes:<10d}{avg_latency_ms:>18.2f}")
             new_row = {"size_in_bytes": size_in_bytes, "avg_latency_ms": avg_latency_ms}
             rows.append(new_row)
 

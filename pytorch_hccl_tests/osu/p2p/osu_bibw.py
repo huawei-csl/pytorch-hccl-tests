@@ -18,6 +18,36 @@ from pytorch_hccl_tests.osu.osu_util_mpi import Utils
 logger = logging.getLogger(__name__)
 
 
+def _exchange_window(
+    s_msg, r_msg, partner, send_tag, recv_tag, window_sizes, send_first, pg=None
+):
+    """Post a window of non-blocking sends/recvs and wait for all of them.
+
+    ``send_first`` controls the posting order: HCCL matches send/recv by
+    posting position, so the two ranks must post in mirrored order.
+    """
+    send_requests = [None] * len(window_sizes)
+    recv_requests = [None] * len(window_sizes)
+
+    def post_sends():
+        for j in window_sizes:
+            send_requests[j] = dist.isend(s_msg, partner, pg, send_tag)
+
+    def post_recvs():
+        for j in window_sizes:
+            recv_requests[j] = dist.irecv(r_msg, partner, pg, recv_tag)
+
+    if send_first:
+        post_sends()
+        post_recvs()
+    else:
+        post_recvs()
+        post_sends()
+
+    wait_all(send_requests)
+    wait_all(recv_requests)
+
+
 def bibw(args):
     backend = args.backend
     rank = dist.get_rank()
@@ -30,8 +60,8 @@ def bibw(args):
     Utils.check_numprocs(world_size, rank, limit=2)
 
     if rank == 0:
-        logger.info("# OMB-Py MPI %s Test" % (options.benchmark))
-        logger.info("# %-8s%18s" % ("Size (B)", "Bandwidth (GB/s)"))
+        logger.info(f"# OMB-Py MPI {options.benchmark} Test")
+        logger.info(f'# {"Size (B)":<8}{"Bandwidth (GB/s)":>18}')
 
     rows = []
 
@@ -42,9 +72,6 @@ def bibw(args):
             options.iterations = options.iterations_large
 
         window_sizes = list(range(window_size))
-
-        send_requests = [None] * window_size
-        recv_requests = [None] * window_size
 
         # Tags are swapped between ranks (canonical OSU C / mpi4py).
         # Rank 0 posts sends first, rank 1 posts recvs first — HCCL matches
@@ -65,30 +92,22 @@ def bibw(args):
         r_msg = safe_rand(size, dtype=dtype).to(device)
 
         dist.barrier()
-        if rank == 0:
-            for i in range(options.iterations + options.skip):
-                if i == options.skip:
-                    start_event = get_device_event(backend)
-                for j in window_sizes:
-                    send_requests[j] = dist.isend(s_msg, partner, pg, send_tag)
-                for j in window_sizes:
-                    recv_requests[j] = dist.irecv(r_msg, partner, pg, recv_tag)
-                wait_all(send_requests)
-                wait_all(recv_requests)
-            end_event = get_device_event(backend)
-            sync_device(backend)
-        else:
-            for i in range(options.iterations + options.skip):
-                if i == options.skip:
-                    start_event = get_device_event(backend)
-                for j in window_sizes:
-                    recv_requests[j] = dist.irecv(r_msg, partner, pg, recv_tag)
-                for j in window_sizes:
-                    send_requests[j] = dist.isend(s_msg, partner, pg, send_tag)
-                wait_all(send_requests)
-                wait_all(recv_requests)
-            end_event = get_device_event(backend)
-            sync_device(backend)
+        start_event = None
+        for i in range(options.iterations + options.skip):
+            if i == options.skip:
+                start_event = get_device_event(backend)
+            _exchange_window(
+                s_msg,
+                r_msg,
+                partner,
+                send_tag,
+                recv_tag,
+                window_sizes,
+                send_first=rank == 0,
+                pg=pg,
+            )
+        end_event = get_device_event(backend)
+        sync_device(backend)
 
         if rank == 0:
             size_in_bytes = int(size) * get_nbytes_from_dtype(dtype)
@@ -104,7 +123,7 @@ def bibw(args):
                 size_in_bytes * options.iterations * window_size * 2 / (1e9 * t_sec)
             )
 
-            logger.info("%-10d%18.2f" % (size_in_bytes, bw_gbps))
+            logger.info(f"{size_in_bytes:<10d}{bw_gbps:>18.2f}")
             new_row = {
                 "size_in_bytes": int(size_in_bytes),
                 "bw_gbps": bw_gbps,
