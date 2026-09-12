@@ -3,17 +3,17 @@
 # Benchmark a communication pattern for various dtypes.
 # Generates multiple CSV/PNG files
 
+BASE_DIR=$(dirname "$0")
+
 # Install plotting deps (see requirements_plotting.txt)
 pip install -r "${BASE_DIR}/../requirements_plotting.txt"
 
-DEVICE="npu"
+export DEVICE="npu"
 DTYPES="int float16 float32"
 DTYPES="float16"
 
 # To surpress a torchrun warning
 export OMP_NUM_THREADS=1
-
-BASE_DIR=$(dirname "$0")
 
 
 # Generate results for latency/bandwidth
