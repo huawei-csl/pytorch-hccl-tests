@@ -3,6 +3,8 @@
 # Benchmark a communication pattern for various world sizes and dtypes
 # Generates multiple CSV/PNG files
 
+BASE_DIR=$(dirname "$0")
+
 # Install plotting deps (see requirements_plotting.txt)
 pip install -r "${BASE_DIR}/../requirements_plotting.txt"
 
@@ -13,8 +15,6 @@ DTYPES="float16"
 
 # To surpress a torchrun warning
 export OMP_NUM_THREADS=1
-
-BASE_DIR=$(dirname "$0")
 
 
 COLLECTIVES="broadcast allreduce allgather reducescatter alltoall"
