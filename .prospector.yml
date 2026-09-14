@@ -31,6 +31,7 @@ pylint:
     - no-else-return
     - inconsistent-return-statements
     - too-many-arguments
+    - too-many-positional-arguments
     - too-many-statements
     - logging-fstring-interpolation
     - logging-not-lazy

@@ -30,8 +30,8 @@ def latency(args):
 
     # Print header
     if rank == 0:
-        logger.info("# PyTorch Benchmark %s Test" % (options.benchmark))
-        logger.info("# %-8s%18s%18s" % ("Size (B)", "Latency (ms)", "BW (GB/s)"))
+        logger.info(f"# PyTorch Benchmark {options.benchmark} Test")
+        logger.info(f'# {"Size (B)":<8}{"Latency (ms)":>18}{"BW (GB/s)":>18}')
 
     rows = []
 
@@ -43,6 +43,7 @@ def latency(args):
         s_msg = safe_rand(size, dtype=dtype).to(device)
         r_msg = safe_rand(size, dtype=dtype).to(device)
 
+        start_event = end_event = None
         dist.barrier()
         if rank == 0:
             for i in iterations:
@@ -75,7 +76,7 @@ def latency(args):
             # (the original code divides round-trip by 2 on lines 70-72).
             t_oneway_sec = avg_latency_ms / 1000.0
             bw_gbps = (size_in_bytes / 1e9) / t_oneway_sec if t_oneway_sec > 0 else 0.0
-            logger.info("%-10d%18.2f%18.2f" % (size_in_bytes, avg_latency_ms, bw_gbps))
+            logger.info(f"{size_in_bytes:<10d}{avg_latency_ms:>18.2f}{bw_gbps:>18.2f}")
             new_row = {
                 "size_in_bytes": size_in_bytes,
                 "avg_latency_ms": avg_latency_ms,

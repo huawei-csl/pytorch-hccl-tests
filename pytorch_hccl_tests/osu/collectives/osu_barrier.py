@@ -22,6 +22,7 @@ def barrier(args):
 
     iterations = list(range(options.iterations + options.skip))
 
+    tic = now()
     dist.barrier()
     for i in iterations:
         if i == options.skip:
@@ -32,4 +33,4 @@ def barrier(args):
 
     avg_lat = Utils.avg_lat((toc - tic) / 1e6, options.iterations, world_size, device)
     if rank == 0:
-        print("%-10d%18.2f" % (0, avg_lat))
+        print(f"{0:<10d}{avg_lat:>18.2f}")

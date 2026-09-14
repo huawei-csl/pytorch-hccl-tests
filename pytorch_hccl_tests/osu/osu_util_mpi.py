@@ -28,8 +28,8 @@ class Utils:
 
     def print_header(benchmark, rank: int):
         if rank == 0:
-            logger.info("# PyTorch Benchmark %s Test" % (benchmark))
-            logger.info("# %-8s%18s" % ("Size (B)", "Elapsed Time (ms)"))
+            logger.info(f"# PyTorch Benchmark {benchmark} Test")
+            logger.info(f'# {"Size (B)":<8}{"Elapsed Time (ms)":>18}')
 
     def check_numprocs(numprocs: int, rank: int, limit: int):
         if limit == 2:
@@ -83,16 +83,9 @@ class Utils:
                 100 - (((overall_avg - (tcomp_avg - test_avg)) / avg_comm_time) * 100),
             )
             print(
-                "%-10d%18.2f%18.2f%18.2f%18.2f%18.2f%18.2f"
-                % (
-                    size,
-                    overall_avg,
-                    (tcomp_avg - test_avg),
-                    avg_comm_time,
-                    overlap,
-                    wait_avg,
-                    init_avg,
-                ),
+                f"{size:<10d}{overall_avg:>18.2f}{tcomp_avg - test_avg:>18.2f}"
+                f"{avg_comm_time:>18.2f}{overlap:>18.2f}{wait_avg:>18.2f}"
+                f"{init_avg:>18.2f}",
                 flush=True,
             )
 

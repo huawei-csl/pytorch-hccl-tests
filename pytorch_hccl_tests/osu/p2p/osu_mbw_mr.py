@@ -51,10 +51,10 @@ def mbw_mr(args):
     partner = rank + pairs if is_sender else rank - pairs
 
     if rank == 0:
-        logger.info("# OMB-Py MPI %s Test" % (options.benchmark))
-        logger.info("# concurrent pairs: %d" % pairs)
+        logger.info(f"# OMB-Py MPI {options.benchmark} Test")
+        logger.info(f"# concurrent pairs: {pairs}")
         logger.info(
-            "# %-8s%20s%20s" % ("Size (B)", "Aggregate BW (GB/s)", "Msg Rate (M/s)")
+            f'# {"Size (B)":<8}{"Aggregate BW (GB/s)":>20}{"Msg Rate (M/s)":>20}'
         )
 
     rows = []
@@ -72,6 +72,7 @@ def mbw_mr(args):
         # any leftover rank contribute 0 to the reduction below.
         local_t_sec = 0.0
 
+        start_event = None
         dist.barrier()
         if is_sender:
             # safe_rand is a wrapper of torch.rand for floats and
@@ -122,7 +123,7 @@ def mbw_mr(args):
             msg_rate_mmps = (pairs * messages) / avg_t / 1e6
 
             logger.info(
-                "%-10d%20.2f%20.2f" % (size_in_bytes, agg_bw_gbps, msg_rate_mmps)
+                f"{size_in_bytes:<10d}{agg_bw_gbps:>20.2f}{msg_rate_mmps:>20.2f}"
             )
             rows.append(
                 {
