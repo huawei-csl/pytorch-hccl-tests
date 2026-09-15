@@ -43,9 +43,9 @@ allgather            OSU MPI/HCCL allgather benchmark
 alltoall             OSU MPI/HCCL alltoall benchmark
 barrier              OSU MPI/HCCL barrier benchmark
 broadcast            OSU MPI/HCCL broadcast benchmark
-gather               OSU MPI/HCCL Bandwidth benchmark
-reduce               OSU MPI/HCCL Bandwidth benchmark
-scatter              OSU MPI/HCCL Bandwidth benchmark
+gather               OSU MPI/HCCL gather benchmark
+reduce               OSU MPI/HCCL reduce benchmark
+scatter              OSU MPI/HCCL scatter benchmark
 reducescatter        OSU MPI/HCCL reduce_scatter benchmark
 collectives          OSU MPI/HCCL collective communications benchmark suite
 benchmarks           OSU MPI/HCCL complete benchmark suite

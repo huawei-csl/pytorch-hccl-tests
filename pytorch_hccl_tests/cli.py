@@ -13,7 +13,10 @@ from pytorch_hccl_tests.osu.collectives import (
     alltoall,
     barrier,
     broadcast,
+    gather,
+    reduce,
     reducescatter,
+    scatter,
 )
 from pytorch_hccl_tests.osu.p2p import bibw, bw, latency, mbw_mr, multi_lat
 from pytorch_hccl_tests.osu.startup import hello
@@ -37,6 +40,9 @@ def select_bench(args):
         "reducescatter": reducescatter,
         "alltoall": alltoall,
         "barrier": barrier,
+        "gather": gather,
+        "reduce": reduce,
+        "scatter": scatter,
     }
     if bench in switcher:
         switcher[bench](args)
