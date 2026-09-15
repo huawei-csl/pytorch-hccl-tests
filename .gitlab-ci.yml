@@ -5,6 +5,8 @@ stages:
     - Testing
     - Packaging
     - Installing
+    - On-device
+    - On-device (aarch64)
 
 prospector:
     tags:
@@ -98,3 +100,89 @@ secret_detection:
         entrypoint: [""]
     script:
         - gitleaks detect -v --source .
+
+
+##############################################################################
+# On-device (NPU) collective benchmarks
+#
+# `parallel:matrix` expands one job per (collective, world size) pair, so a
+# single failing collective is immediately visible in the pipeline instead of
+# being buried in one long serial log.
+#
+# Note: DEVICE must be passed on the `make` command line (the Makefile assigns
+# it with `=`, which would shadow the environment); WORLD_SIZE is `?=` in the
+# Makefile, so the CI variable is honoured as-is.
+##############################################################################
+.on_device_npu:
+    image: quay.io/ascend/cann:9.1.0-910b-ubuntu22.04-py3.12
+    variables:
+        DEVICE: "npu"
+        HCCL_DTYPE: "float16"
+        OMP_NUM_THREADS: "1"  # To suppress a torchrun warning
+    before_script:
+        - source /usr/local/Ascend/ascend-toolkit/set_env.sh
+        - npu-smi info
+        - python3 -VV
+    script:
+        - make ${INSTALL_TARGET}
+        - echo "Running ${BENCH} (device=${DEVICE} world_size=${WORLD_SIZE} dtype=${HCCL_DTYPE})"
+        - make ${BENCH} DEVICE=${DEVICE}
+    artifacts:
+        when: always
+        expire_in: 1 week
+        paths:
+            - "osu_*.csv"
+            - "*.log"
+    retry:
+        max: 1
+        when: runner_system_failure
+
+.collectives_matrix:
+    parallel:
+        matrix:
+            - BENCH: [allreduce, allgather, broadcast, reducescatter, alltoall, barrier, gather, reduce, scatter]
+              WORLD_SIZE: ["2", "4", "8"]
+
+collectives_npu_x86_910B4:
+    extends:
+        - .on_device_npu
+        - .collectives_matrix
+    stage: On-device
+    tags:
+        - docker_npu  # On-device NPU (x86-64 / 910B4)
+    variables:
+        INSTALL_TARGET: "install-npu-x86"
+
+collectives_npu_aarch64_910B2:
+    extends:
+        - .on_device_npu
+        - .collectives_matrix
+    stage: On-device (aarch64)
+    tags:
+        - docker_npu_910B2  # On-device NPU (aarch64 / 910B2)
+    variables:
+        INSTALL_TARGET: "install-npu-arm"
+    when: manual
+    allow_failure: true
+
+# Full sweep (world sizes 2..8, all collectives) plus the plots.
+# Manual: considerably longer than the matrix above.
+collectives_sweep_npu_x86_910B4:
+    extends: .on_device_npu
+    stage: On-device
+    tags:
+        - docker_npu  # On-device NPU (x86-64 / 910B4)
+    variables:
+        INSTALL_TARGET: "install-npu-x86"
+    script:
+        - make ${INSTALL_TARGET}
+        - ./scripts/benchmark_collectives.sh
+    artifacts:
+        when: always
+        expire_in: 1 month
+        paths:
+            - "osu_*.csv"
+            - "plot-*.png"
+            - "*.log"
+    when: manual
+    allow_failure: true

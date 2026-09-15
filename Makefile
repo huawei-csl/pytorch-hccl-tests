@@ -141,19 +141,19 @@ alltoall: ## OSU MPI/HCCL alltoall benchmark
 	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark alltoall --device ${DEVICE}
 
 barrier: ## OSU MPI/HCCL barrier benchmark
-	torchrun --nnodes 1 --nproc_per_node 2 pytorch_hccl_tests/cli.py --benchmark barrier --device ${DEVICE}
+	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark barrier --device ${DEVICE}
 
 broadcast: ## OSU MPI/HCCL broadcast benchmark
 	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark broadcast --device ${DEVICE}
 
-gather: ## OSU MPI/HCCL Bandwidth benchmark
-	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/osu/collectives/osu_gather.py --device ${DEVICE}
+gather: ## OSU MPI/HCCL gather benchmark
+	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark gather --device ${DEVICE}
 
-reduce: ## OSU MPI/HCCL Bandwidth benchmark
-	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/osu/collectives/osu_reduce.py --device ${DEVICE}
+reduce: ## OSU MPI/HCCL reduce benchmark
+	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark reduce --device ${DEVICE}
 
-scatter: ## OSU MPI/HCCL Bandwidth benchmark
-	torchrun --nnodes 1 --nproc_per_node 2 pytorch_hccl_tests/osu/collectives/osu_scatter.py --device ${DEVICE}
+scatter: ## OSU MPI/HCCL scatter benchmark
+	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark scatter --device ${DEVICE}
 
 reducescatter: ## OSU MPI/HCCL reduce_scatter benchmark
 	torchrun --nnodes 1 --nproc_per_node ${WORLD_SIZE} pytorch_hccl_tests/cli.py --benchmark reducescatter --device ${DEVICE}
@@ -161,6 +161,6 @@ reducescatter: ## OSU MPI/HCCL reduce_scatter benchmark
 
 p2p: latency bandwidth bidirectional-bw multi-latency mbw-mr ## OSU MPI/HCCL point-to-point benchmark suite
 
-collectives: allreduce allgather alltoall barrier gather reduce scatter reducescatter  ## OSU MPI/HCCL collective communications benchmark suite
+collectives: allreduce allgather alltoall barrier broadcast reduce scatter reducescatter  ## OSU MPI/HCCL collective communications benchmark suite
 
 benchmarks: p2p collectives ## OSU MPI/HCCL complete benchmark suite

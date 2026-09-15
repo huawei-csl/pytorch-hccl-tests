@@ -17,7 +17,7 @@ DTYPES="float16"
 export OMP_NUM_THREADS=1
 
 
-COLLECTIVES="broadcast allreduce allgather reducescatter alltoall"
+COLLECTIVES="broadcast allreduce allgather reducescatter alltoall reduce scatter"
 
 for BENCH in ${COLLECTIVES}
 do
